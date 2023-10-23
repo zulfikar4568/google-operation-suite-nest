@@ -6,6 +6,8 @@ import * as expressWinston from 'express-winston';
 
 const gcpTransport = new LoggingWinston({
   projectId: 'lab-experiment-70',
+  keyFilename:
+    '/Users/zulfikar4568/Documents/gcp/fundamental/google-operation-suite-nest/lab-experiment.json',
 });
 
 const consoleTransport = new transports.Console({

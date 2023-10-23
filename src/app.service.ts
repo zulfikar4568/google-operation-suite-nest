@@ -17,7 +17,7 @@ export class AppService {
     try {
       JSON.parse('{"malformedJson": true');
       return 'finish';
-    } catch (error) {
+    } catch (error: any) {
       throw new BadRequestException({
         code: HttpStatus.BAD_REQUEST.toString(),
         message: error.message,
