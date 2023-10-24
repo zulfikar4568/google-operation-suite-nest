@@ -1,11 +1,11 @@
 import { ErrorReporting } from '@google-cloud/error-reporting';
+import appConfig from 'src/config/app.config';
 
 export function reportError(exception: any) {
   // Instantiates a client
   const errors = new ErrorReporting({
-    projectId: 'lab-experiment-70',
-    keyFilename:
-      '/Users/zulfikar4568/Documents/gcp/fundamental/google-operation-suite-nest/lab-experiment.json',
+    projectId: appConfig.PROJECT_ID,
+    keyFilename: appConfig.KEY_SERVICE_ACCOUNT_PATH,
     reportMode: 'always',
   });
 

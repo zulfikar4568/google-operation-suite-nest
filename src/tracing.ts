@@ -14,6 +14,7 @@ import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-ho
 import { WinstonInstrumentation } from '@opentelemetry/instrumentation-winston';
 import { TraceExporter } from '@google-cloud/opentelemetry-cloud-trace-exporter';
 import * as process from 'process';
+import appConfig from './config/app.config';
 
 /**
  * Enabled this for debugging
@@ -22,15 +23,14 @@ import * as process from 'process';
 // diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 
 const otelSDK = new NodeSDK({
-  serviceName: 'google-app-suite-nest',
+  serviceName: appConfig.APP_NAME,
   metricReader: new PrometheusExporter({
     port: 8081,
   }),
   spanProcessor: new BatchSpanProcessor(
     new TraceExporter({
-      projectId: 'lab-experiment-70',
-      keyFilename:
-        '/Users/zulfikar4568/Documents/gcp/fundamental/google-operation-suite-nest/lab-experiment.json',
+      projectId: appConfig.PROJECT_ID,
+      keyFilename: appConfig.KEY_SERVICE_ACCOUNT_PATH,
     }),
   ),
   contextManager: new AsyncLocalStorageContextManager(),
@@ -51,7 +51,7 @@ const otelSDK = new NodeSDK({
     new WinstonInstrumentation({
       enabled: true,
       logHook: (_span, record) => {
-        record['resource.service.name'] = 'google-app-suite-nest';
+        record['resource.service.name'] = appConfig.APP_NAME;
       },
     }),
   ],

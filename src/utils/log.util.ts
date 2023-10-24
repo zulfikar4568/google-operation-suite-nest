@@ -3,11 +3,11 @@ import { WinstonModuleOptions, utilities } from 'nest-winston';
 import { transports } from 'winston';
 import * as winston from 'winston';
 import * as expressWinston from 'express-winston';
+import appConfig from 'src/config/app.config';
 
 const gcpTransport = new LoggingWinston({
-  projectId: 'lab-experiment-70',
-  keyFilename:
-    '/Users/zulfikar4568/Documents/gcp/fundamental/google-operation-suite-nest/lab-experiment.json',
+  projectId: appConfig.PROJECT_ID,
+  keyFilename: appConfig.KEY_SERVICE_ACCOUNT_PATH,
 });
 
 const consoleTransport = new transports.Console({
