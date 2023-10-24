@@ -13,9 +13,13 @@ import { NodeSDK } from '@opentelemetry/sdk-node';
 import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks';
 import { WinstonInstrumentation } from '@opentelemetry/instrumentation-winston';
 import { TraceExporter } from '@google-cloud/opentelemetry-cloud-trace-exporter';
-import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
+import * as process from 'process';
 
-diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
+/**
+ * Enabled this for debugging
+ */
+// import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
+// diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 
 const otelSDK = new NodeSDK({
   serviceName: 'google-app-suite-nest',
@@ -44,8 +48,23 @@ const otelSDK = new NodeSDK({
   instrumentations: [
     new ExpressInstrumentation(),
     new NestInstrumentation(),
-    new WinstonInstrumentation(),
+    new WinstonInstrumentation({
+      enabled: true,
+      logHook: (_span, record) => {
+        record['resource.service.name'] = 'google-app-suite-nest';
+      },
+    }),
   ],
 });
 
 export default otelSDK;
+
+process.on('SIGTERM', () => {
+  otelSDK
+    .shutdown()
+    .then(
+      () => console.log('SDK shut down successfully'),
+      (err) => console.log('Error shutting down SDK', err),
+    )
+    .finally(() => process.exit(0));
+});

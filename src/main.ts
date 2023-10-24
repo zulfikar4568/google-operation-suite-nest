@@ -1,10 +1,12 @@
+// Initialized Observability
+import otelSDK from './tracing';
+otelSDK.start();
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import HttpExceptionFilter from './filters/http.filter';
 import * as expressWinston from 'express-winston';
 import { logger, winstonExpressOptions } from './utils/log.util';
-import otelSDK from './tracing';
-import * as process from 'process';
 
 const httpServer = new Promise(async (resolve, reject) => {
   try {
@@ -26,16 +28,5 @@ const httpServer = new Promise(async (resolve, reject) => {
 });
 
 (async function () {
-  otelSDK.start();
   await Promise.all([httpServer]);
 })();
-
-process.on('SIGTERM', () => {
-  otelSDK
-    .shutdown()
-    .then(
-      () => console.log('SDK shut down successfully'),
-      (err) => console.log('Error shutting down SDK', err),
-    )
-    .finally(() => process.exit(0));
-});
